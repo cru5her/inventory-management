@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -126,10 +127,53 @@ export default {
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
+    },
+    submitted: {
+      title: 'Submitted Orders',
+      description: 'Restocking orders placed with suppliers (not affected by the filters above)',
+      orderNumber: 'Order Number',
+      submittedDate: 'Submitted',
+      items: 'Items',
+      totalCost: 'Total Cost',
+      leadTime: 'Lead Time (days)',
+      expectedDelivery: 'Expected Delivery',
+      status: 'Status',
+      statusSubmitted: 'Submitted',
+      empty: 'No restocking orders have been submitted yet.',
+      loadError: 'Failed to load submitted orders'
     }
   },
 
   // Finance/Spending
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    subtitle: 'Plan a restocking order within your budget based on forecasted demand growth',
+    budgetLabel: 'Budget',
+    recommendations: 'Recommended Purchases',
+    columns: {
+      sku: 'SKU',
+      name: 'Item',
+      trend: 'Trend',
+      quantity: 'Quantity',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time (days)'
+    },
+    summary: {
+      totalCost: 'Total Cost',
+      remainingBudget: 'Remaining Budget',
+      longestLeadTime: 'Longest Lead Time'
+    },
+    days: '{count} days',
+    placeOrder: 'Place Order',
+    submitting: 'Submitting...',
+    success: 'Order {orderNumber} submitted. Expected lead time: {days} days.',
+    failed: 'Failed to place order',
+    loadError: 'Failed to load demand forecasts',
+    empty: 'No items fit within the current budget. Increase the budget to see recommendations.'
+  },
+
   finance: {
     title: 'Finance Dashboard',
     description: 'Track revenue, costs, and financial performance',
