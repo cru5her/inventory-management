@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -126,10 +127,53 @@ export default {
       status: 'ステータス',
       expectedDelivery: '予定配達日',
       actualDelivery: '実際の配達日'
+    },
+    submitted: {
+      title: '発注済み注文',
+      description: 'サプライヤーに発注した補充注文(上記のフィルターは適用されません)',
+      orderNumber: '注文番号',
+      submittedDate: '発注日',
+      items: '品目',
+      totalCost: '合計コスト',
+      leadTime: 'リードタイム(日)',
+      expectedDelivery: '配達予定日',
+      status: 'ステータス',
+      statusSubmitted: '発注済み',
+      empty: '発注済みの補充注文はまだありません。',
+      loadError: '発注済み注文の読み込みに失敗しました'
     }
   },
 
   // Finance/Spending
+  // 補充発注
+  restocking: {
+    title: '補充発注',
+    subtitle: '需要予測の増加分に基づき、予算内で補充注文を計画します',
+    budgetLabel: '予算',
+    recommendations: '推奨購入品目',
+    columns: {
+      sku: 'SKU',
+      name: '品目',
+      trend: 'トレンド',
+      quantity: '数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム(日)'
+    },
+    summary: {
+      totalCost: '合計コスト',
+      remainingBudget: '残り予算',
+      longestLeadTime: '最長リードタイム'
+    },
+    days: '{count}日',
+    placeOrder: '発注する',
+    submitting: '送信中...',
+    success: '注文 {orderNumber} を送信しました。リードタイム: {days}日',
+    failed: '発注に失敗しました',
+    loadError: '需要予測の読み込みに失敗しました',
+    empty: '現在の予算で購入できる品目はありません。予算を増やすと推奨が表示されます。'
+  },
+
   finance: {
     title: '財務ダッシュボード',
     description: '収益、コスト、財務パフォーマンスの追跡',

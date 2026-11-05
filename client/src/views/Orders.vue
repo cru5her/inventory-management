@@ -74,6 +74,55 @@
           </table>
         </div>
       </div>
+
+      <!-- Restocking orders are independent of the global filters (period/location/category/status) -->
+      <div class="card submitted-card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submitted.title') }} ({{ submittedOrders.length }})</h3>
+        </div>
+        <div v-if="submittedError" class="error">{{ submittedError }}</div>
+        <div v-else-if="submittedOrders.length === 0" class="loading">{{ t('orders.submitted.empty') }}</div>
+        <div v-else class="table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.submitted.orderNumber') }}</th>
+                <th class="col-date">{{ t('orders.submitted.submittedDate') }}</th>
+                <th class="col-items">{{ t('orders.submitted.items') }}</th>
+                <th class="col-value">{{ t('orders.submitted.totalCost') }}</th>
+                <th class="col-lead">{{ t('orders.submitted.leadTime') }}</th>
+                <th class="col-date">{{ t('orders.submitted.expectedDelivery') }}</th>
+                <th class="col-status">{{ t('orders.submitted.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in submittedOrders" :key="order.id">
+                <td class="col-order-number"><strong>{{ order.order_number }}</strong></td>
+                <td class="col-date">{{ formatDate(order.submitted_date) }}</td>
+                <td class="col-items">
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.item_sku" class="item-entry">
+                        <span class="item-name">{{ item.item_name }}</span>
+                        <span class="item-meta">{{ t('orders.quantity') }}: {{ item.quantity }} @ {{ formatCost(item.unit_cost) }}</span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td class="col-value"><strong>{{ formatCost(order.total_cost) }}</strong></td>
+                <td class="col-lead">{{ order.lead_time_days }}</td>
+                <td class="col-date">{{ formatDate(order.expected_delivery) }}</td>
+                <td class="col-status">
+                  <span class="badge info">{{ t('orders.submitted.statusSubmitted') }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -83,6 +132,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrency } from '../utils/currency'
 
 export default {
   name: 'Orders',
@@ -95,6 +145,8 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const submittedOrders = ref([])
+    const submittedError = ref(null)
 
     // Use shared filters
     const {
@@ -153,13 +205,32 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    // Submitted restocking orders; global filters do not apply here
+    const loadSubmittedOrders = async () => {
+      try {
+        submittedError.value = null
+        submittedOrders.value = await api.getRestockingOrders()
+      } catch (err) {
+        submittedError.value = t('orders.submitted.loadError') + ': ' + err.message
+      }
+    }
+
+    // Costs are stored in USD; convert for the active currency
+    const formatCost = (amount) => formatCurrency(amount, currentCurrency.value)
+
+    onMounted(() => {
+      // Load in parallel; each handles its own errors
+      Promise.all([loadOrders(), loadSubmittedOrders()])
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      submittedOrders,
+      submittedError,
+      formatCost,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -201,6 +272,14 @@ export default {
 
 .col-value {
   width: 120px;
+}
+
+.col-lead {
+  width: 130px;
+}
+
+.submitted-card {
+  margin-top: 1.5rem;
 }
 
 /* Items details styling */

@@ -12,6 +12,20 @@ server_path = Path(__file__).parent.parent.parent / "server"
 sys.path.insert(0, str(server_path))
 
 from main import app
+from mock_data import submitted_orders
+
+
+@pytest.fixture(autouse=True)
+def reset_submitted_orders():
+    """Empty the in-memory restocking orders around every test.
+
+    The list is module-level and shared by the whole session, so without this
+    an order created in one test would leak into the assertions of later tests.
+    It is cleared in place (not rebound) because main.py holds a reference to it.
+    """
+    submitted_orders.clear()
+    yield
+    submitted_orders.clear()
 
 
 @pytest.fixture
